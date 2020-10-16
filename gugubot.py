@@ -21,7 +21,7 @@ def wait_on_time():
     now_time = time()
     print(strftime('now its: UTC %Y-%m-%d %H:%M:%S', gmtime(time())))
     remain_time = work_time - now_time
-    if remain_time < 0 or remain_time > 3600:
+    if remain_time < 0 or remain_time > 1800:
         print('OUT OF WORK TIME!')
         return None
     while remain_time > 0:
