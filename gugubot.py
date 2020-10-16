@@ -243,7 +243,7 @@ def save_log(dicts,now_hour):
 
 if __name__ == "__main__":
     # 提前启动，等待整点
-    #wait_on_time()
+    wait_on_time()
     
     # 现在时间（北京）
     now_hour = gmtime(time()+28800)[3]
@@ -261,3 +261,5 @@ if __name__ == "__main__":
     if 'created_at' in response:
         save_log(dicts,now_hour)  
         print('Success! Created at: ' + str(response['created_at']))
+    else:
+        print(response)
