@@ -71,7 +71,7 @@ def get_weather():
     coordinates = '114.4169,30.5095'
     caiyun_token = os.environ['CAIYUN_TOKEN']
     url = f'https://api.caiyunapp.com/v2.5/{caiyun_token}/{coordinates}/weather.json?hourlysteps=5&dailysteps=3'
-    CODE = {'CLEAR_DAY': '晴', 'CLEAR_NIGHT': '晴夜', 'PARTLY_CLOUDY_DAY': '多云', 'PARTLY_CLOUDY_NIGHT': '夜云', 'CLOUDY': '阴', 'LIGHT_HAZE': '轻度雾霾', 'MODERATE_HAZE': '中度雾霾','HEAVY_HAZE': '重度雾霾', 'LIGHT_RAIN': '小雨', 'MODERATE_RAIN': '中雨', 'HEAVY_RAIN': '大雨', 'STORM_RAIN': '暴雨', 'FOG': '雾', 'LIGHT_SNOW': '小雪', 'MODERATE_SNOW': '中雪', 'HEAVY_SNOW': '大雪', 'STORM_SNOW': '暴雪', 'DUST': '浮尘', 'SAND': '沙尘', 'WIND': '大风'}
+    CODE = {'CLEAR_DAY': '晴', 'CLEAR_NIGHT': '晴夜', 'PARTLY_CLOUDY_DAY': '多云', 'PARTLY_CLOUDY_NIGHT': '云夜', 'CLOUDY': '阴', 'LIGHT_HAZE': '轻度雾霾', 'MODERATE_HAZE': '中度雾霾','HEAVY_HAZE': '重度雾霾', 'LIGHT_RAIN': '小雨', 'MODERATE_RAIN': '中雨', 'HEAVY_RAIN': '大雨', 'STORM_RAIN': '暴雨', 'FOG': '雾', 'LIGHT_SNOW': '小雪', 'MODERATE_SNOW': '中雪', 'HEAVY_SNOW': '大雪', 'STORM_SNOW': '暴雪', 'DUST': '浮尘', 'SAND': '沙尘', 'WIND': '大风'}
     req = requests.get(url).json()
     dicts = {}
     realtime = req['result']['realtime']
@@ -84,7 +84,7 @@ def get_weather():
     dicts['next_5h'],temp = [],{}
     for index in range(5):
         temp['datetime'] = hourly['skycon'][index]['datetime'][11:16]
-        temp['temperature'] = round(hourly['temperature'][index]['value'],1)
+        temp['temperature'] = round(hourly['temperature'][index]['value'])
         temp['skycon'] = CODE[hourly['skycon'][index]['value']]
         dicts['next_5h'].append(temp.copy())
     dicts['next_2d'] = []
@@ -101,16 +101,17 @@ def get_weather():
 
 def format_weather(dicts,now_hour):
     '''返回天气字符串'''
-    string = '\n来看看天气吧！'
-    string += f"武汉现在{dicts['realtime']}，气温{dicts['temperature']}℃，空气质量{dicts['api']}。{dicts['description']}。\n"
-    string += '未来5小时预报：\n'
-    for index in range(5):
-        temp = dicts['next_5h'][index]
-        string += f"{temp['datetime']}：{temp['skycon']}，气温{temp['temperature']}℃；\n"
+    string = '\n来看看天气吧！\n'
+    string += f"武汉现在{dicts['realtime']}，气温{dicts['temperature']}℃，空气质量{dicts['api']}。\n"
+    # string += f"武汉现在{dicts['realtime']}，气温{dicts['temperature']}℃，空气质量{dicts['api']}。{dicts['description']}。\n"
+    # string += '未来3小时天气预报：\n'
+    # for index in range(5):
+    #     temp = dicts['next_5h'][index]
+    #     string += f"{temp['datetime']}：{temp['skycon']}，气温{temp['temperature']}℃；\n"
     if now_hour == 7:
         string += f"\n🌄: {dicts['astro'][0]}   🌆: {dicts['astro'][1]}"
     elif now_hour == 21:
-        string += f"明后天天气预报，明天{dicts['next_2d'][0]}，后天{dicts['next_2d'][1]}。"
+        string += f"\n未来两天天气预报，明天{dicts['next_2d'][0]}，后天{dicts['next_2d'][1]}。"
     else:
         string += '\n注意天气，好好午睡哦。'
     return string
@@ -239,6 +240,9 @@ def save_log(dicts,now_hour):
         data = dicts['content_sb'] + ',' + dicts['translation'] + '\n'
         with open('sb_log.csv', 'a+', encoding='utf8') as log_file:
             log_file.write(data)
+    else:
+        with open('log.csv', 'a+', encoding='utf8') as log_file:
+            log_file.write('咕\n')
 
 
 if __name__ == "__main__":
@@ -247,17 +251,17 @@ if __name__ == "__main__":
     
     # 现在时间（北京）
     now_hour = gmtime(time()+28800)[3]
-
+    
     # 整点问候与时间进度条
     string = time_bar(now_hour)
   
     # 附加内容
     dicts, attachment = get_attachment(now_hour)
-
+    
     # 发布微博
     response = post_weibo(string+attachment, dicts, now_hour)
 
-    # # 结果保存与输出
+    # 结果保存与输出
     if 'created_at' in response:
         save_log(dicts,now_hour)  
         print('Success! Created at: ' + str(response['created_at']))
