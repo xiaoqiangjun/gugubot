@@ -247,7 +247,7 @@ def save_log(dicts,now_hour):
 
 if __name__ == "__main__":
     # 提前启动，等待整点
-    #wait_on_time()
+    wait_on_time()
     
     # 现在时间（北京）
     now_hour = gmtime(time()+28800)[3]
@@ -263,7 +263,7 @@ if __name__ == "__main__":
     dicts = {}
     if now_hour == 8:
         dicts, attachment = get_attachment(now_hour)
-        save_log(dicts,now_hour)
+    save_log(dicts,now_hour)
     
     # 发布微博
     response = post_weibo(string+attachment, dicts, now_hour)
