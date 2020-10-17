@@ -3,7 +3,7 @@ name: Python application
 on:
   workflow_dispatch:
   schedule:
-    - cron: 40 * * * *
+    - cron: 50 * * * *
 
 jobs:
   run_gugubot:

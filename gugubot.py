@@ -198,7 +198,7 @@ def post_weibo(string,dicts,now_hour):
     elif now_hour == 8:
         pic_url = dicts['url'].replace('UHD','1920x1080')
     else:
-        pic_url = None
+        pic_url = 'https://source.unsplash.com/featured/1080x1920?nature,mountain'
     payload = {
         "access_token": os.environ['WEIBO_TOKEN'],
         "status": string
@@ -247,23 +247,33 @@ def save_log(dicts,now_hour):
 
 if __name__ == "__main__":
     # 提前启动，等待整点
-    wait_on_time()
+    #wait_on_time()
     
     # 现在时间（北京）
     now_hour = gmtime(time()+28800)[3]
     
     # 整点问候与时间进度条
-    string = time_bar(now_hour)
+    # string = time_bar(now_hour)
   
     # 附加内容
-    dicts, attachment = get_attachment(now_hour)
+    # dicts, attachment = get_attachment(now_hour)
+    
+    string = '%s\n' % (('咕' * now_hour + '~~~') if now_hour!=0 else '没得咕...')
+    attachment = '\nhttp://t.cn/A6bpoKJC'
+    dicts = {}
+    if now_hour == 8:
+        dicts, attachment = get_attachment(now_hour)
+        save_log(dicts,now_hour)
     
     # 发布微博
     response = post_weibo(string+attachment, dicts, now_hour)
 
     # 结果保存与输出
     if 'created_at' in response:
-        save_log(dicts,now_hour)  
+        # save_log(dicts,now_hour)  
         print('Success! Created at: ' + str(response['created_at']))
     else:
         print(response)
+
+    # 字符超出限制
+    # 字符串转码不完整
