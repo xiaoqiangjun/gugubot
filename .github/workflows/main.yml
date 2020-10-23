@@ -31,13 +31,13 @@ jobs:
         git config --global user.name xianqiangjun
         python gugubot.py
     
-    - name: commit
-      run: |
-        git add .
-        git commit -m "update log"
+    # - name: commit
+    #   run: |
+    #     git add .
+    #     git commit -m "update log"
         
-    - name: Push changes
-      uses: ad-m/github-push-action@v0.6.0
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        branch: main
+    # - name: Push changes
+    #   uses: ad-m/github-push-action@v0.6.0
+    #   with:
+    #     github_token: ${{ secrets.GITHUB_TOKEN }}
+    #     branch: main
