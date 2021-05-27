@@ -1,8 +1,8 @@
 """
 # Author: Xiaoqiangjun
 # Date: 2021-04-14 22:07:19
-# LastEditTime: 2021-04-18 21:59:06
-# LastEditors: Xiaoqiangjun
+# LastEditTime: 2021-05-27 11:20:07
+# LastEditors: Please set LastEditors
 # FilePath: /gugubot/weibo.py
 """
 
@@ -22,21 +22,22 @@ class Weibo:
     """
     def __init__(self, username, password, token=None, cookies_flag=True, post_delay=5):
         """
-         # description: 使用用户名，密码，ocr密钥等初始化Login类
-         # param int/str username 用户名、邮箱、手机号等
-         # param str password 密码
-         # param bool cookies_flag 是否尝试使用以保存的cookies登录
-         # param str token 快识平台 fast.95man.com 验证码识别令牌
-         # return None
+         description: 使用用户名，密码，ocr密钥等初始化Login类
+         param int/str username 用户名、邮箱、手机号等
+         param str password 密码
+         param str token 快识平台 fast.95man.com 验证码识别令牌
+         param bool cookies_flag 是否尝试使用以保存的cookies登录
+         param int post_delay 连续发布微博时间间隔
+         return None
         """
         self.post_delay = post_delay
         self.loginweibo = login.Login(username, password, token, cookies_flag)
 
     def weibo_login(self):
         """
-        # description: 登录操作
-        # param None
-        # return None
+        description: 登录操作
+        param None
+        return None
         """
 
         self.loginweibo.main()
@@ -44,12 +45,12 @@ class Weibo:
 
     def post_weibo(self, text, intime=None, pic=None, rank=0):
         """
-        # description: 发送微博的基础函数
-        # param str text 微博文字内容
-        # param str intime 定时微博发布时间的时间戳（毫秒）
-        # param str pic 微博图片id，以逗号分隔
-        # param int rank 可以查看微博的人 1仅自己 0公开 6好友圈 10粉丝
-        # return dict response 微博返回数据
+        description: 发送微博的基础函数  
+        param str text 微博文字内容
+        param str intime 定时微博发布时间的时间戳（毫秒）
+        param str pic 微博图片id，以逗号分隔
+        param int rank 可以查看微博的人 1仅自己 0公开 6好友圈 10粉丝
+        return dict response 微博返回数据
         """
 
         url = "https://weibo.com/ajax/statuses/update"
@@ -69,12 +70,12 @@ class Weibo:
 
     def get_intime(self, intime):
         """
-        # description: 转换定时微博的时间
-        # param str intime 定时微博发布时间，支持以下格式：
+        description: 转换定时微博的时间
+        param str intime 定时微博发布时间，支持以下格式：
             1. 毫秒时间戳，例如：1618588800000
             2. "+n"字符串，表示当前时间后面的第n个整点，例如现在19:45，"+2"表示21:00
             3. 标准格式时间字符串，形式为：2021-04-17 08:00:00
-        # return int timestmp 转换后时间戳
+        return int timestmp 转换后时间戳
         """
 
         if intime.isdigit():
@@ -91,10 +92,10 @@ class Weibo:
 
     def get_picid(self, paths):
         """
-        # description: 上传图片，获取id
-        # param list.str paths 待发送图片地址，支持网络图片（包括http头的）与本地图片
+        description: 上传图片，获取id
+        param list.str paths 待发送图片地址，支持网络图片（包括http头的）与本地图片
             例如：["https://www.baidu.com/bd.png","F:/desktop/b107.png"]
-        # return str 图片id字符串
+        return str 图片id字符串
         """
         pid = []
         for path in paths:
@@ -118,9 +119,9 @@ class Weibo:
 
     def upload_pic(self, file):
         """
-        # description: 上传图片到微博，非新版微博使用接口
-        # param bytes-like file 待上传图片数据
-        # return str pid 微博图片id
+        description: 上传图片到微博，非新版微博使用接口
+        param bytes-like file 待上传图片数据
+        return str pid 微博图片id
         """
 
         url = 'https://picupload.weibo.com/interface/pic_upload.php?data=base64'
@@ -136,9 +137,9 @@ class Weibo:
 
     def get_intime_weibo(self):
         """
-        # description: 获取已发布定时微博数据
-        # param None
-        # return list.list weibo_list 定时微博列表，格式为[tid, tm, text]
+        description: 获取已发布定时微博数据
+        param None
+        return list.list weibo_list 定时微博列表，格式为[tid, tm, text]
             例如：[['4627425050499719', '1618834560', 'asfa'],
                   ['4627425097420565', '1618920960', '242g']]
         """
@@ -158,10 +159,13 @@ class Weibo:
 
 
 if __name__ == '__main__':
-    weibo = Weibo()
+    username = ""   # 你的微博账号
+    password = ""   # 你的微博密码
+    ocr_token = ""  # orc密钥，如果需要填写图片字母数字的验证码，可以在fast.95man.com申请，否则可以留空
+    cookies_flag = True # 是否保留Cookies,下次无需再次登录，建议开启
+
+    weibo = Weibo(username,password,ocr_token,cookies_flag)
     weibo.weibo_login()
     pic = weibo.get_picid(["https://www.runoob.com/wp-content/uploads/2014/05/python3.png"])
-    tm = weibo.get_intime("+3")
-    weibo.post_weibo("test23",intime=tm,rank=1)
-
-
+    times = weibo.get_intime("+1")
+    weibo.post_weibo("Hello World!",intime=times,pic=pic,rank=1)

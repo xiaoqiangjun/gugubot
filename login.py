@@ -1,8 +1,8 @@
 """
 # Author: Xiaoqiangjun
 # Date: 2021-04-15 11:08:06
-# LastEditTime: 2021-04-18 22:38:24
-# LastEditors: Xiaoqiangjun
+# LastEditTime: 2021-05-27 11:27:12
+# LastEditors: Please set LastEditors
 # FilePath: /gugubot/login.py
 """
 
@@ -28,12 +28,12 @@ class Login:
     """
     def __init__(self, username, password, token=None, cookies_flag=True):
         """
-         # description: 初始化用户名，密码，ocr密钥
-         # param int/str username 用户名、邮箱、手机号等
-         # param str password 密码
-         # param str token 快识平台 fast.95man.com 验证码识别令牌
-         # param bool cookies_flag 是否尝试使用以保存的cookies登录
-         # return None
+        description: 初始化用户名，密码，ocr密钥
+        param int/str username 用户名、邮箱、手机号等
+        param str password 密码
+        param str token 快识平台 fast.95man.com 验证码识别令牌
+        param bool cookies_flag 是否尝试使用以保存的cookies登录
+        return None
         """
 
         self.sess = requests.session()
@@ -62,11 +62,11 @@ class Login:
 
     def get_pubkey(self):
         """
-        # description: 获取登录公钥等，用于加密密码登录
-        # param None
-        # return dict response
-        # 请求链接：https://login.sina.com.cn/sso/prelogin.php?rsakt=mod&client=ssologin.js(v1.4.19)
-        # 一个返回示例：
+        description: 获取登录公钥等，用于加密密码登录
+        param None
+        return dict response
+        请求链接：https://login.sina.com.cn/sso/prelogin.php?rsakt=mod&client=ssologin.js(v1.4.19)
+        一个返回示例：
         {
             'retcode': 0,
             'servertime': 1618476658,
@@ -96,9 +96,9 @@ class Login:
 
     def get_sp(self, pubkey_json):
         """
-        # description: 通过公钥等数据加密密码
-        # param json pubkey_json 获取的公钥字典
-        # return str sp 256位加密私钥
+        description: 通过公钥等数据加密密码
+        param json pubkey_json 获取的公钥字典
+        return str sp 256位加密私钥
         """
 
         pubkey = pubkey_json['pubkey']
@@ -111,11 +111,11 @@ class Login:
 
     def figure_code(self, pcid, report=None):
         """
-        # description: 使用快识平台识别验证码
-        # param str pcid pubkey中标识设备的字段，用于请求验证码
-        # param str report 识别失败后向验证码识别平台提交错误
-        # return (str,str) (id,result) 图片ID与识别结果
-        # 请求链接：https://login.sina.com.cn/cgi/pin.php
+        description: 使用快识平台识别验证码
+        param str pcid pubkey中标识设备的字段，用于请求验证码
+        param str report 识别失败后向验证码识别平台提交错误
+        return (str,str) (id,result) 图片ID与识别结果
+        请求链接：https://login.sina.com.cn/cgi/pin.php
         """
 
         code_url = f'https://login.sina.com.cn/cgi/pin.php?r={str(random())[:-9:-1]}&s=0&p={pcid}'
@@ -135,12 +135,12 @@ class Login:
 
     def pre_login(self, pubkey_json, codes=None):
         """
-        # description: 微博预登录，返回微博登录ticket以及跨域链接
-        # param dict pubkey_json 公钥数据
-        # param str codes 可能需要验证码
-        # return dict response 用户数据以及跨域链接等
-        # 请求链接：https://login.sina.com.cn/sso/login.php?client=ssologin.js(v1.4.19)
-        # 一个返回示例：
+        description: 微博预登录，返回微博登录ticket以及跨域链接
+        param dict pubkey_json 公钥数据
+        param str codes 可能需要验证码
+        return dict response 用户数据以及跨域链接等
+        请求链接：https://login.sina.com.cn/sso/login.php?client=ssologin.js(v1.4.19)
+        一个返回示例：
         {
             'retcode': '0',
             'uid': '6015545982',
@@ -203,10 +203,10 @@ class Login:
 
     def cross_login(self, pre_json):
         """
-        # description: 使用跨域链接登录微博
-        # param dict pre_json 预登录得到的json，包括跨域链接
-        # return dict response 登录结果与用户数据
-        # 一个返回示例：{'result': True, 'userinfo': {'uniqueid': '6015545982', 'displayname': '鸽鸽bot'}}
+        description: 使用跨域链接登录微博
+        param dict pre_json 预登录得到的json，包括跨域链接
+        return dict response 登录结果与用户数据
+        一个返回示例：{'result': True, 'userinfo': {'uniqueid': '6015545982', 'displayname': '鸽鸽bot'}}
         """
 
         url = pre_json['crossDomainUrlList'][0]
@@ -250,7 +250,7 @@ class Login:
 
     def main(self):
         """
-        # description: 登录主函数，按流程完成登录操作
+        description: 登录主函数，按流程完成登录操作
         """
 
         try:
